@@ -1,1 +1,18 @@
-{}
+{
+  "dependencies": {
+    "discord.js": "^14.15.2",
+    "dotenv": "^16.4.5"
+  },
+  "name": "xnioo-bot",
+  "version": "1.0.0",
+  "description": "Dedicated Discord Bot",
+  "main": "index.js",
+  "devDependencies": {
+    "eslint": "^9.3.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
