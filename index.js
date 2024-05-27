@@ -1,15 +1,17 @@
 require('dotenv').config();
-const {Client, Collection, Events, GatewayIntentBits } = require('discord.js');
+const {Client, Collection, Events, GatewayIntentBits, MessageCollector, MessageManager } = require('discord.js');
 const config = require('./config.json');
 
 const fs = require('node:fs');
 const path = require('node:path');
 
-const bot = new Client({ intents: [GatewayIntentBits.Guilds] });
+const bot = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent] });
 
 bot.commands = new Collection();
+bot.prefix = new Map();
 const foldersPath = path.join(__dirname, 'commands');
 const commandFolders = fs.readdirSync(foldersPath);
+const prefixFolders = fs.readdirSync("./prefix").filter(file => file.endsWith('.js'));
 
 for (const folder of commandFolders) {
 	const commandsPath = path.join(foldersPath, folder);
@@ -27,11 +29,27 @@ for (const folder of commandFolders) {
 }
 
 const { TOKEN } = process.env;
-
 const { prefix, name } = config;
 
 bot.once('ready', () => {
     console.info(`Angemeldet mit ${bot.user.tag}`);
+});
+
+for (arx of prefixFolders) {
+	const Cmd = require('./prefix/' + arx)
+	bot.prefix.set(Cmd.name, Cmd)
+}
+
+bot.on('messageCreate', async message => {
+	const prefix = '!';
+
+	if (!message.content.startsWith(prefix) || message.author.bot) return;
+	const args = message.content.slice(prefix.length).trim().split(/ +/);
+	const prefix_command = args.shift().toLocaleLowerCase();
+	const prefixcmd = bot.prefix.get(prefix_command);
+if (prefixcmd) {
+	prefixcmd.run(bot, message, args)
+};
 });
 
 bot.on(Events.InteractionCreate, async interaction => {
@@ -55,13 +73,4 @@ bot.on(Events.InteractionCreate, async interaction => {
 	}
 });
 
-
-
-
-
-
-
-
-
 bot.login(TOKEN);
-
