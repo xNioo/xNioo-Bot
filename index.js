@@ -5,7 +5,7 @@ const config = require('./config.json');
 const fs = require('node:fs');
 const path = require('node:path');
 
-const bot = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent] });
+const bot = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildPresences] });
 
 bot.commands = new Collection();
 bot.prefix = new Map();
