@@ -1,6 +1,7 @@
 const { SlashCommandBuilder } = require('discord.js');
 
 module.exports = {
+    
     data: new SlashCommandBuilder()
         .setName('myroles')
         .setDescription('Information zu den Rollen'),

@@ -1,6 +1,7 @@
 const { SlashCommandBuilder } = require('discord.js');
 
 module.exports = {
+    
     data: new SlashCommandBuilder()
         .setName('member')
         .setDescription('Mitglieder Zahl'),
