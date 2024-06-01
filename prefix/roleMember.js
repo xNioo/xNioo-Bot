@@ -1,8 +1,9 @@
 const { messageLink, RoleManager } = require("discord.js");
 const member = require("../commands/utility/member");
+let prefixName = 'roleMember';
 
 module.exports = {
-    name: 'roleMember',
+    name: prefixName.toLocaleLowerCase(),
     description: 'Angehörige einer Rolle',
 
     run: (bot, message, args) => {
