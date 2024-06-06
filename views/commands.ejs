@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Commands</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../public/css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Commands</h1>
+        <p>Logged in as <%= user.username %>#<%= user.discriminator %></p>
+
+        <!-- Form to create a new command -->
+        <form action="/commands" method="POST">
+            <div class="form-group">
+                <label for="guildId">Guild ID:</label>
+                <input type="text" class="form-control" id="guildId" name="guildId" required>
+            </div>
+            <div class="form-group">
+                <label for="name">Command Name:</label>
+                <input type="text" class="form-control" id="name" name="name" required>
+            </div>
+            <div class="form-group">
+                <label for="response">Command Response:</label>
+                <input type="text" class="form-control" id="response" name="response" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Create Command</button>
+        </form>
+
+        <!-- Display existing commands -->
+        <h2>Existing Commands</h2>
+        <ul>
+            <% commands.forEach(command => { %>
+                <li>
+                    <strong><%= command.name %></strong>: <%= command.response %> (Guild ID: <%= command.guildId %>)
+                    <form action="/commands/delete" method="POST" style="display:inline;">
+                        <input type="hidden" name="commandId" value="<%= command._id %>">
+                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                    </form>
+                </li>
+            <% }) %>
+        </ul>
+    </div>
+</body>
+</html>

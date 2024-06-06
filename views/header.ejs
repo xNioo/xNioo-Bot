@@ -1,0 +1,13 @@
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2"><%= title %></h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <div>
+            <% if (user) { %>
+                <span class="text-white">Eingeloggt als: <%= user.username %></span>
+                <a href="/logout" class="btn btn-sm btn-outline-secondary">Logout</a>
+            <% } else { %>
+                <a href="/login" class="btn btn-sm btn-outline-secondary">Login</a>
+            <% } %>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../public/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <title>Guilds</title>
+</head>
+<body class="bg-dark text-white">
+    <div class="container-fluid">
+        <div class="row">
+            <%- include('navbar') %>
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                <%- include('header', { title: 'Guilds', user: user }) %>
+                <!-- Gilden-Inhalt -->
+                <p>Hier können Sie Ihre Gilden verwalten.</p>
+            </main>
+        </div>
+    </div>
+</body>
+</html>
