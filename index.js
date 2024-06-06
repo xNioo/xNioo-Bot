@@ -1,14 +1,22 @@
 require('dotenv').config();
 const {Client, Collection, Events, GatewayIntentBits, MessageCollector, MessageManager, Partials } = require('discord.js');
 const config = require('./config.json');
-
 const fs = require('node:fs');
 const path = require('node:path');
+const mongoose = require('mongoose');
+const Command = require('./models/Command');
 
-const bot = new Client({ 
+mongoose.connect(`mongodb+srv://cxzichan:${process.env.db_password}@discordbot.fw9cnxq.mongodb.net/?retryWrites=true&w=majority&appName=discordbot`);
+const db = mongoose.connection;
+db.once('open', () => {
+    console.log('Verbunden mit MongoDB');
+});
+
+const bot = new Client({
 	intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildPresences, GatewayIntentBits.GuildMessageReactions],
 	partials: [Partials.Message, Partials.Reaction]
  });
+
 
 bot.commands = new Collection();
 bot.prefix = new Map();
@@ -22,7 +30,7 @@ const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith('.js'
 
 const { TOKEN } = process.env;
 const { prefix, name } = config;
- 
+
 for (const folder of commandFolders) {
 	const commandsPath = path.join(foldersPath, folder);
 	const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
@@ -64,7 +72,7 @@ for (arx of prefixFolders) {
 // Bot can write a reply for prefix commands
 bot.on('messageCreate', async message => {
 	const prefix = '!';
-	
+
 	if (!message.content.startsWith(prefix) || message.author.bot) return;
 	const args = message.content.slice(prefix.length).trim().split(/ +/);
 	const prefix_command = args.shift().toLocaleLowerCase();
@@ -95,11 +103,5 @@ bot.on(Events.InteractionCreate, async interaction => {
 		}
 	}
 });
-
-
-
-
-
-
 
 bot.login(TOKEN);

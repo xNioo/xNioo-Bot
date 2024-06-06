@@ -1,7 +1,15 @@
 {
   "dependencies": {
+    "body-parser": "^1.20.2",
+    "bootstrap": "^5.3.3",
     "discord.js": "^14.15.2",
-    "dotenv": "^16.4.5"
+    "dotenv": "^16.4.5",
+    "ejs": "^3.1.10",
+    "express": "^4.19.2",
+    "express-session": "^1.18.0",
+    "mongoose": "^8.4.0",
+    "passport": "^0.7.0",
+    "passport-discord": "^0.1.4"
   },
   "name": "xnioo-bot",
   "version": "1.0.0",
