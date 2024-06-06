@@ -32,29 +32,18 @@ app.use(session({
     saveUninitialized: false,
     cookie: {
         secure: false, // true wenn HTTPS verwendet wird
-        maxAge: 60000 // Lebensdauer des Cookies in Millisekunden (z.B. 60 Sekunden)
+        maxAge: 7 * 24 * 60 * 60 * 1000 // Lebensdauer des Cookies in Millisekunden (z.B. 60 Sekunden)
     }
 }));
 
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Serialize user object to store in the session
-passport.serializeUser((user, done) => {
-    done(null, user.id);
-});
-
-// Deserialize user by finding user by id
-passport.deserializeUser((id, done) => {
-    User.findById(id, (err, user) => {
-        done(err, user);
-    });
-});
 
 // Passport middleware using Discord OAuth2 strategy for authentication.
 passport.use(new DiscordStrategy({
-    clientID: 'YOUR_CLIENT_ID',
-    clientSecret: 'YOUR_CLIENT_SECRET',
+    clientID: process.env.client_id,
+    clientSecret: process.env.client_secret,
     callbackURL: 'http://localhost:3000/auth/discord/callback',
     scope: ['identify', 'guilds']
 }, async (accessToken, refreshToken, profile, done) => {
@@ -84,6 +73,20 @@ passport.use(new DiscordStrategy({
         return done(err, null);
     }
 }));
+// Serialize user object to store in the session
+passport.serializeUser((user, done) => {
+    done(null, user.id);
+});
+
+// Deserialize user by finding user by id
+passport.deserializeUser(async (id, done) => {
+    try {
+        const user = await User.findById(id);
+        done(null, user);
+    } catch (err) {
+        done(err, null);
+    }
+});
 
 // APP GET ANFRAGEN
 function isAuthenticated(req, res, next) {
@@ -103,11 +106,14 @@ app.get('/guilds', isAuthenticated, (req, res) => {
     res.render('guilds', { user: req.user });
 });
 
-app.get('/commands', isAuthenticated, (req, res) => {
-    Command.find({ userId: req.user.id }, (err, commands) => {
-        if (err) return console.error(err);
+app.get('/commands', isAuthenticated, async (req, res) => {
+    try {
+        const commands = await Command.find({ userId: req.user.id });
         res.render('commands', { user: req.user, commands: commands });
-    });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Error retrieving commands');
+    }
 });
 
 app.get('/settings', isAuthenticated, (req, res) => {
@@ -132,32 +138,30 @@ app.get('/logout', (req, res) => {
 });
 
 // APP POST ANFRAGEN
-app.post('/commands', isAuthenticated, (req, res) => {
+app.post('/commands', isAuthenticated, async (req, res) => {
     const newCommand = new Command({
         guildId: req.body.guildId,
         userId: req.user.id,
         name: req.body.name,
         response: req.body.response,
     });
-    newCommand.save(err => {
-        if (err) {
-            console.error(err);
-            res.status(500).send('Error saving command');
-        } else {
-            res.redirect('/commands');
-        }
-    });
+    try {
+        await newCommand.save();
+        res.redirect('/commands');
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Error saving command');
+    }
 });
 
-app.post('/commands/delete', isAuthenticated, (req, res) => {
-    Command.findByIdAndRemove(req.body.commandId, err => {
-        if (err) {
-            console.error(err);
-            res.status(500).send('Error deleting command');
-        } else {
-            res.redirect('/commands');
-        }
-    });
+app.post('/commands/delete', isAuthenticated, async (req, res) => {
+    try {
+        await Command.findByIdAndRemove(req.body.commandId);
+        res.redirect('/commands');
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Error deleting command');
+    }
 });
 
 app.listen(port, () => {
