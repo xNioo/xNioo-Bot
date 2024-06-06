@@ -20,7 +20,7 @@ module.exports = {
             return reaction.emoji.name === '✅';
         };
 
-        const collector = botMessage.createReactionCollector({ filter });
+        const collector = botMessage.createReactionCollector({ filter, time: 10000 });
 
         collector.on('collect', (reaction, user) => {
             console.log(`Collecxted ${reaction.emoji.name} from ${user.tag}`);

@@ -45,7 +45,7 @@ for (const folder of commandFolders) {
 		}
 	}
 }
-
+//redirects to reaction Events
 for (const file of eventFiles) {
 	const filePath = path.join(eventsPath, file);
 	const event = require(filePath);
